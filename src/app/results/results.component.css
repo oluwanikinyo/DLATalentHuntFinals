@@ -1,0 +1,28 @@
+.results-section {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid #1e293b;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.results-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f2f4ff;
+  margin-bottom: 16px;
+  letter-spacing: 0.04em;
+}
+
+.results-summary {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 20px;
+}
+
+.total-votes {
+  font-size: 22px;
+  font-weight: 800;
+  color: #a78bfa;
+}
