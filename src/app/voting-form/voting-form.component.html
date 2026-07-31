@@ -22,36 +22,83 @@
   </div>
 
   <fieldset class="participants-fieldset">
-    <legend class="form-label">Select Your Candidate</legend>
-    <div class="participants-grid">
-      @for (participant of votingService.participants; track participant.id) {
-        <label class="participant-card" [class.selected]="selectedParticipant === participant.id">
-          <input
-            type="radio"
-            name="participant"
-            [value]="participant.id"
-            [checked]="selectedParticipant === participant.id"
-            (change)="selectedParticipant = participant.id"
-            required
-          />
-          <div class="participant-card-inner">
-            <div class="participant-identity">
-              <span class="participant-avatar">{{ participant.avatar }}</span>
-              <span class="participant-name">{{ participant.name }}</span>
-            </div>
-            <span class="participant-tag">Candidate</span>
+    <legend class="form-label">Select Your Contestant</legend>
+
+    @if (loadingContestants()) {
+      <div class="participants-grid" aria-hidden="true">
+        @for (i of skeletonItems; track i) {
+          <div class="skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-line skeleton-line-name"></div>
+            <div class="skeleton-line skeleton-line-tag"></div>
           </div>
-        </label>
-      }
-    </div>
+        }
+      </div>
+    }
+
+    @if (!loadingContestants() && loadError) {
+      <span class="form-error">{{ loadError }}</span>
+    }
+
+    @if (!loadingContestants() && !loadError && contestants.length === 0) {
+      <span class="form-hint">No contestants found.</span>
+    }
+
+    @if (!loadingContestants() && !loadError && contestants.length > 0) {
+      <div class="participants-grid">
+        @for (contestant of contestants; track contestant.id) {
+          <label class="participant-card" [class.selected]="selectedContestant?.id === contestant.id">
+            <input
+              type="radio"
+              name="contestant"
+              [value]="contestant.id"
+              [checked]="selectedContestant?.id === contestant.id"
+              (change)="selectContestant(contestant)"
+              required
+            />
+            <div class="participant-card-inner">
+              <div class="participant-identity">
+                <img
+                  class="participant-avatar-img"
+                  [src]="contestant.imageUrl"
+                  [alt]="contestant.name"
+                />
+                @if (contestant.contestantNumber !== null) {
+                  <span class="participant-name">Contestant #{{ contestant.contestantNumber }}</span>
+                }
+                <span class="participant-name">{{ contestant.name }}</span>
+              </div>
+              <span class="participant-tag">{{ formatTalent(contestant.talent) }}</span>
+            </div>
+          </label>
+        }
+      </div>
+    }
+
+    @if (!loadingContestants() && totalPages > 1) {
+      <div class="pagination">
+        <button type="button" class="page-btn" [disabled]="page <= 1" (click)="goToPage(page - 1)">
+          &#8592;
+        </button>
+        <span class="page-info">Page {{ page }} of {{ totalPages }}</span>
+        <button
+          type="button"
+          class="page-btn"
+          [disabled]="page >= totalPages"
+          (click)="goToPage(page + 1)"
+        >
+          &#8594;
+        </button>
+      </div>
+    }
   </fieldset>
 
   @if (errorMessage) {
     <span class="form-error">{{ errorMessage }}</span>
   }
 
-  <button type="button" class="submit-btn" (click)="onSubmit()">
-    <span class="btn-text">Submit Vote</span>
+  <button type="button" class="submit-btn" [disabled]="submitting" (click)="onSubmit()">
+    <span class="btn-text">{{ submitting ? 'Submitting...' : 'Submit Vote' }}</span>
     <span class="btn-icon">&#8594;</span>
   </button>
 </div>
