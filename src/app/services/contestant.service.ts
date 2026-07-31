@@ -15,7 +15,7 @@ import {
 export class ContestantService {
   private http = inject(HttpClient);
   private deviceIdService = inject(DeviceIdService);
-  private readonly baseUrl = `${environment.apiUrl}/api/v1/talent-hunt/contestants`;
+  private readonly baseUrl = `${environment.apiUrl}api/v1/talent-hunt/contestants`;
 
   getContestants(params: ContestantsQueryParams = {}): Observable<PaginatedData<Contestant>> {
     let httpParams = new HttpParams();
